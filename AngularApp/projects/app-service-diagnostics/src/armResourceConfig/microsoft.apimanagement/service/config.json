@@ -18,7 +18,7 @@
   },
   "categories": [
     {
-      "id": "Availability and Performance",
+      "id": "availabilityandperformance",
       "name": "Availability and Performance",
       "description": "Check your API service's health and discover performance issues",
       "keywords": [
@@ -29,10 +29,11 @@
       ],
       "color": "rgb(208, 175, 239)",
       "createFlowForCategory": true,
-      "chatEnabled": false
+      "chatEnabled": false,
+      "overviewDetectorId": "apim-availability-and-performance"
     },
     {
-      "id": "API Policies",
+      "id": "apipolicies",
       "name": "API Policies",
       "description": "Find out if your API policies are misconfigured",
       "keywords": [
@@ -43,10 +44,11 @@
       ],
       "color": "rgb(249, 213, 180)",
       "createFlowForCategory": true,
-      "chatEnabled": false
+      "chatEnabled": false,
+      "overviewDetectorId": "Apim-proxy-policy-errors-recategory"
     },
     {
-      "id": "Gateway Performance",
+      "id": "gatewayperformance",
       "name": "Gateway Performance",
       "description": "Analyze your API Gateway performance and discover issues",
       "keywords": [
@@ -57,10 +59,11 @@
       ],
       "color": "rgb(208, 228, 176)",
       "createFlowForCategory": true,
-      "chatEnabled": false
+      "chatEnabled": false,
+      "overviewDetectorId": "apim-proxy-response-recategory"
     },
     {
-      "id": "Service Upgrade",
+      "id": "serviceupgrade",
       "name": "Service Upgrade",
       "description": "Check your service SKU and discover your service upgrade events",
       "keywords": [
@@ -71,7 +74,8 @@
       ],
       "color": "rgb(186, 211, 245)",
       "createFlowForCategory": true,
-      "chatEnabled": false
+      "chatEnabled": false,
+      "overviewDetectorId": "apim-service-sku-recategory"
     }
   ],
   "quickLinks": [
