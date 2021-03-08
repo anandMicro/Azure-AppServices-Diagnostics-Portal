@@ -15,6 +15,10 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { filter } from 'rxjs-compat/operator/filter';
 import { map } from 'rxjs/operators';
 
+const exclusiveDetectorTypes: DetectorType[] = [
+  DetectorType.CategoryOverview
+];
+
 @Injectable()
 export class FeatureService {
 
@@ -37,7 +41,9 @@ export class FeatureService {
           this.categories = categories;
           detectors.forEach(detector => {
             if ((detector.category && detector.category.length > 0) ||
-              (detector.description && detector.description.length > 0)) {
+              (detector.description && detector.description.length > 0) ||
+              this.checkAddDetector(detector)) {
+
               this._rewriteCategory(detector);
               if (detector.type === DetectorType.Detector) {
                 this._features.push(<Feature>{
@@ -210,8 +216,12 @@ export class FeatureService {
     const bestPractices = "Best Practices";
     const riskAssessments = "Risk Assessments";
     //If category name is "Best Practice" and only has "Risk Assessment" category then rewrite category to "Risk Assessment"
-    if(detector.category === bestPractices && !this.categories.find(category => category.name === bestPractices) && this.categories.find(category => category.name === riskAssessments)) {
+    if (detector.category === bestPractices && !this.categories.find(category => category.name === bestPractices) && this.categories.find(category => category.name === riskAssessments)) {
       detector.category = riskAssessments;
     }
+  }
+
+  private checkAddDetector(detector: DetectorMetaData): boolean {
+    return exclusiveDetectorTypes.findIndex(type => detector.category === type) === -1;
   }
 }
