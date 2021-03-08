@@ -40,10 +40,7 @@ export class FeatureService {
           this._detectors = detectors;
           this.categories = categories;
           detectors.forEach(detector => {
-            if ((detector.category && detector.category.length > 0) ||
-              (detector.description && detector.description.length > 0) ||
-              this.checkAddDetector(detector)) {
-
+            if (this.checkAddDetector(detector)) {
               this._rewriteCategory(detector);
               if (detector.type === DetectorType.Detector) {
                 this._features.push(<Feature>{
@@ -222,6 +219,8 @@ export class FeatureService {
   }
 
   private checkAddDetector(detector: DetectorMetaData): boolean {
-    return exclusiveDetectorTypes.findIndex(type => detector.category === type) === -1;
+    if (exclusiveDetectorTypes.findIndex(type => detector.type === type) > -1) return false;
+
+    return (detector.category && detector.category.length > 0) || (detector.description && detector.description.length > 0)
   }
 }
