@@ -83,7 +83,7 @@ export class FabDataTableFilterComponent implements OnInit {
     this.selectedKey = all;
     this.optionsForSingleChoice.push({
       key: all,
-      text: all,
+      text: "All",
       onClick: () => {
         this.selected = new Set(this.options);
         this.selectedKey = all;
