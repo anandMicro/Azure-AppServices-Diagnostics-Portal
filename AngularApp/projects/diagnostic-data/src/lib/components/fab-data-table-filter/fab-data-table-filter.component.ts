@@ -2,6 +2,8 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { DirectionalHint, IChoiceGroup, IChoiceGroupOption } from 'office-ui-fabric-react';
 import { TableFilterSelectionOption, TableFilter } from '../../models/detector';
 
+const all = "all";
+
 @Component({
   selector: 'fab-data-table-filter',
   templateUrl: './fab-data-table-filter.component.html',
@@ -31,7 +33,7 @@ export class FabDataTableFilterComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    this.displayName = `${this.tableFilter.columnName} : all`;
+    this.displayName = `${this.tableFilter.columnName} : ${all}`;
     this.filterOption = this.tableFilter.selectionOption;
 
     this.options.sort();
@@ -77,12 +79,20 @@ export class FabDataTableFilterComponent implements OnInit {
   }
 
   //For single selection
-  initForSingleSelect() {
-    this.optionsWithFormattedName.forEach((option, index) => {
+  initForSingleSelect() {    
+    this.selectedKey = all;
+    this.optionsForSingleChoice.push({
+      key: all,
+      text: all,
+      onClick: () => {
+        this.selected = new Set(this.options);
+        this.selectedKey = all;
+      }
+    });
+    this.optionsWithFormattedName.forEach(option => {
       this.optionsForSingleChoice.push({
         key: option.formattedName,
         text: option.formattedName,
-        defaultChecked: index === 0,
         onClick: () => {
           this.selected.clear();
           this.selectedKey = option.formattedName;
@@ -120,7 +130,7 @@ export class FabDataTableFilterComponent implements OnInit {
     } else if (this.filterOption === TableFilterSelectionOption.Multiple) {
       if (this.selected.size === 0 || this.selected.size === this.options.length) {
         //Selected nothing will be same as selected all as for display
-        this.displayName = `${this.tableFilter.columnName} : all`;
+        this.displayName = `${this.tableFilter.columnName} : ${all}`;
       } else if (this.selected.size == 1) {
         const selectedName = Array.from(this.selected)[0];
         const formattedSelectionName = this.optionsWithFormattedName.find(o => selectedName === o.name).formattedName;

@@ -21,7 +21,7 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
   ngAfterContentInit() {
     if (this.renderingProperties.columnOptions && this.renderingProperties.columnOptions.length > 0) {
       this.renderingProperties.columnOptions.forEach((option) => {
-        if (option.selectionOption !== undefined && option.selectionOption !== TableFilterSelectionOption.None) {
+        if (this.validateFilterOption(option)) {
           this.tableFilters.push({ columnName: option.name, selectionOption: option.selectionOption });
         }
       });
@@ -79,7 +79,8 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
       } else if (selectionCount === 1) {
         const row = this.selection.getSelection()[0];
         if (this.renderingProperties.descriptionColumnName) {
-          this.selectionText = row[this.renderingProperties.descriptionColumnName];
+          const selectionText = row[this.renderingProperties.descriptionColumnName];
+          this.selectionText = selectionText !== undefined ? selectionText : "";
         }
       }
     }
@@ -118,8 +119,8 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
         isSorted: false,
         isResizable: true,
         isMultiline: true,
-        minWidth: this.getMinOrMaxColumnWidth(column.columnName,true),
-        maxWidth: this.getMinOrMaxColumnWidth(column.columnName,false),
+        minWidth: this.getMinOrMaxColumnWidth(column.columnName, true),
+        maxWidth: this.getMinOrMaxColumnWidth(column.columnName, false),
       });
 
     this.columns = columns.filter((item) => item.name !== this.renderingProperties.descriptionColumnName && this.checkColumIsVisible(item.name));
@@ -255,12 +256,20 @@ export class DataTableV4Component extends DataRenderBaseComponent implements Aft
   private getMinOrMaxColumnWidth(name: string, isMinWidth: boolean = true): number {
     let width = isMinWidth ? columnMinWidth : columnMaxWidth;
     const option = this.getColumnOption(name);
-    if(isMinWidth && option && option.minWidth) {
+    if (isMinWidth && option && option.minWidth) {
       width = option.minWidth
-    }else if(!isMinWidth && option && option.maxWidth) {
+    } else if (!isMinWidth && option && option.maxWidth) {
       width = option.maxWidth;
     }
     return width;
+  }
+
+  private validateFilterOption(option: TableColumnOption): boolean {
+    if (option.selectionOption === undefined || option.selectionOption === TableFilterSelectionOption.None) {
+      return false;
+    }
+    const columns = this.diagnosticData.table.columns;
+    return columns.findIndex(col => col.columnName === option.name) > -1;
   }
 }
 
