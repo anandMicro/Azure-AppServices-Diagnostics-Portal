@@ -192,7 +192,7 @@ export class FeatureService {
       this._portalActionService.openChangeAnalysisBlade();
       return;
     }
-    const isHomepage = !this._activatedRoute.root.firstChild.firstChild.firstChild.firstChild.snapshot.params["category"];
+    const isHomepage = this._router.url.toLowerCase().endsWith(startupInfo.resourceId.toLowerCase());
     //If it's in category overview page
     if (!isHomepage) {
       if (type === DetectorType.Detector) {
