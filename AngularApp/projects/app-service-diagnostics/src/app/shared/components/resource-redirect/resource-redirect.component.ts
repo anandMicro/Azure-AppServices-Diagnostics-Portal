@@ -7,6 +7,7 @@ import { StartupInfo } from '../../models/portal';
 import { DemoSubscriptions } from '../../../betaSubscriptions';
 import { DetectorType, TelemetryService } from 'diagnostic-data';
 import { VersionTestService } from '../../../fabric-ui/version-test.service';
+import { PortalService } from '../../../startup/services/portal.service';
 
 @Component({
   selector: 'resource-redirect',
@@ -16,7 +17,7 @@ import { VersionTestService } from '../../../fabric-ui/version-test.service';
 export class ResourceRedirectComponent implements OnInit {
   private _newVersionEnabled = true;
   private _useLegacyVersion = true;
-  constructor(private _authService: AuthService, private _router: Router, private _windowService: WindowService, private _versionTestService: VersionTestService, private _telemetryService: TelemetryService) { }
+  constructor(private _authService: AuthService, private _router: Router, private _windowService: WindowService, private _versionTestService: VersionTestService, private _telemetryService: TelemetryService, private _portalService: PortalService) { }
 
   ngOnInit() {
     this._versionTestService.isLegacySub.subscribe(useLegacyVersion => this._useLegacyVersion = useLegacyVersion);
@@ -31,12 +32,14 @@ export class ResourceRedirectComponent implements OnInit {
             const ticketBladeWorkflowId = info.workflowId ? info.workflowId : '';
             const supportTopicId = info.supportTopicId ? info.supportTopicId : '';
             const sessionId = info.sessionId ? info.sessionId : '';
+            const effectiveLocale = info.effectiveLocale ? info.effectiveLocale: '';
 
             const eventProperties: { [name: string]: string } = {
                 'ResourceId': resourceId,
                 'TicketBladeWorkflowId': ticketBladeWorkflowId,
                 'SupportTopicId': supportTopicId,
                 'PortalSessionId': sessionId,
+                'EffectiveLocale': effectiveLocale,
             };
             this._telemetryService.eventPropertiesSubject.next(eventProperties);
         }
@@ -79,6 +82,12 @@ export class ResourceRedirectComponent implements OnInit {
             };
           }
 
+          if(info.effectiveLocale)
+          {
+            navigationExtras.queryParams = navigationExtras.queryParams ? {...navigationExtras.queryParams, ...{"l": info.effectiveLocale}}: {"l": info.effectiveLocale};
+          }
+
+          console.log("navigation", path, navigationExtras);
           this._router.navigateByUrl(
             this._router.createUrlTree([path], navigationExtras)
           );

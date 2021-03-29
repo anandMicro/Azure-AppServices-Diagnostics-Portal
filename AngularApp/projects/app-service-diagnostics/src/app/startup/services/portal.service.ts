@@ -31,6 +31,7 @@ export class PortalService {
 
     private shellSrc: string;
     private tokenObservable: ReplaySubject<string>;
+    public effectiveLocale: string;
 
     private acceptedOriginsSuffix: string[] = [];
 
@@ -103,6 +104,7 @@ export class PortalService {
 
     initializeIframe(): void {
         this.shellSrc = this.getQueryStringParameter('trustedAuthority');
+        this.effectiveLocale = this.getQueryStringParameter("l");
         // This is a required message. It tells the shell that your iframe is ready to receive messages.
         this.postMessage(Verbs.ready, null);
         this.postMessage(Verbs.getStartupInfo, null);
@@ -183,7 +185,7 @@ export class PortalService {
             if (methodName === Verbs.sendStartupInfo) {
                 const info = <StartupInfo>data;
                 this.sessionId = info.sessionId;
-                info.isIFrameForCaseSubmissionSolution = isIFrameForCaseSubmissionSolution;                
+                info.isIFrameForCaseSubmissionSolution = isIFrameForCaseSubmissionSolution;
                 this.startupInfoObservable.next(info);
                 this.isIFrameForCaseSubmissionSolution.next(isIFrameForCaseSubmissionSolution);
             } else if (methodName === Verbs.sendAppInsightsResource) {
@@ -254,6 +256,8 @@ export class PortalService {
             const pair = parameterList[i].split('=');
             map[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1]);
         }
+
+        console.log("Querymap from the portal", map);
         return map;
     }
 
@@ -305,7 +309,6 @@ export class PortalService {
         }
 
         return this._getAcceptOrigins(event).pipe(map(originsSuffix => {
-
             return originsSuffix.findIndex(o => event.origin.toLowerCase().endsWith(o.toLowerCase())) > -1;
         }));
     }

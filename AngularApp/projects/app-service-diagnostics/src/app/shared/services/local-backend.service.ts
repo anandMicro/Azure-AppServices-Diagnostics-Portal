@@ -16,9 +16,12 @@ export class LocalBackendService {
 
   useLocal: boolean = false;
 
+  effectiveLocale: string="";
+
   constructor(private _http: HttpClient, private _armService: ArmService, private _authService: AuthService) {
     this._authService.getStartupInfo().subscribe(info => {
       this.resourceId = info.resourceId.replace('microsoft.web', 'Microsoft.Web');
+      this.effectiveLocale = info.effectiveLocale;
     });
   }
 
@@ -28,7 +31,9 @@ export class LocalBackendService {
 
   public getDetectors(overrideResourceUri:string = ""): Observable<DetectorMetaData[]> {
     let resourceId = overrideResourceUri ? overrideResourceUri : this.resourceId;
-    const path = `v4${resourceId}/detectors`;
+    let languageQueryParam = !this.effectiveLocale || /^\s*$/.test(this.effectiveLocale) ? `?l=${this.effectiveLocale}` : "";
+    console.log("localbackend getdetectors languageparam", languageQueryParam, this.effectiveLocale);
+    const path = `v4${resourceId}/detectors${this.effectiveLocale}`;
     if (this.detectorList.length > 0 && overrideResourceUri === "") {
       return of(this.detectorList);
     }
@@ -51,7 +56,9 @@ export class LocalBackendService {
 
   public getDetector(detectorName: string, startTime: string, endTime: string, refresh?: boolean, internalView?: boolean, formQueryParams?: string,overrideResourceUri?: string) {
     let resourceId = overrideResourceUri ? overrideResourceUri : this.resourceId;
-    let path = `v4${resourceId}/detectors/${detectorName}?startTime=${startTime}&endTime=${endTime}`;
+    let languageQueryParam = !!this.effectiveLocale ? `&l=${this.effectiveLocale}` : "";
+    let path = `v4${resourceId}/detectors/${detectorName}?startTime=${startTime}&endTime=${endTime}${languageQueryParam}`;
+    console.log("localbackendservice path", path);
     if(formQueryParams != null) {
       path += formQueryParams;
     }

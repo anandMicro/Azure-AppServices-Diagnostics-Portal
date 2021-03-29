@@ -18,9 +18,12 @@ export class GenericApiService {
 
     useLocal: boolean = false;
 
+    effectiveLocale: string="";
+
     constructor(private _http: HttpClient, private _armService: ArmService, private _authService: AuthService) {
         this._authService.getStartupInfo().subscribe(info => {
             this.resourceId = info.resourceId;
+            this.effectiveLocale = info.effectiveLocale;
         });
     }
 
@@ -30,11 +33,13 @@ export class GenericApiService {
 
     public getDetectors(overrideResourceUri:string = ""): Observable<DetectorMetaData[]> {
         let resourceId = overrideResourceUri ? overrideResourceUri : this.resourceId;
+        let languageQueryParam = !this.effectiveLocale || /^\s*$/.test(this.effectiveLocale) ? `?l=${this.effectiveLocale}` : "";
+        console.log("genericapi getdetectors languageparam", languageQueryParam, this.effectiveLocale);
         if (this.useLocal) {
             const path = `v4${resourceId}/detectors?stampName=waws-prod-bay-085&hostnames=netpractice.azurewebsites.net`;
             return this.invoke<DetectorResponse[]>(path, 'POST').pipe(map(response => response.map(detector => detector.metadata)));
         } else {
-            const path = `${resourceId}/detectors`;
+            const path = `${resourceId}/detectors${this.effectiveLocale}`;
             return this._armService.getResourceCollection<DetectorResponse[]>(path).pipe(map((response: ResponseMessageEnvelope<DetectorResponse>[]) => {
                 this.detectorList = response.map(listItem => listItem.properties.metadata);
                 return this.detectorList;
@@ -59,11 +64,13 @@ export class GenericApiService {
 
     public getDetector(detectorName: string, startTime: string, endTime: string, refresh?: boolean, internalView?: boolean, additionalQueryParams?: string,overrideResourceUri?: string) {
         let resourceId = overrideResourceUri ? overrideResourceUri : this.resourceId;
+        let languageQueryParam = !this.effectiveLocale || /^\s*$/.test(this.effectiveLocale) ? `&l=${this.effectiveLocale}` : "";
+        console.log("genericapi getdetector languageparam", languageQueryParam, this.effectiveLocale);
         if (this.useLocal) {
-            const path = `v4${resourceId}/detectors/${detectorName}?stampName=waws-prod-bay-085&hostnames=netpractice.azurewebsites.net`;
+            const path = `v4${resourceId}/detectors/${detectorName}?stampName=waws-prod-bay-085&hostnames=netpractice.azurewebsites.net${languageQueryParam}`;
             return this.invoke<DetectorResponse>(path, 'POST');
         } else {
-            let path = `${resourceId}/detectors/${detectorName}?startTime=${startTime}&endTime=${endTime}`;
+            let path = `${resourceId}/detectors/${detectorName}?startTime=${startTime}&endTime=${endTime}${languageQueryParam}`;
             if (additionalQueryParams != undefined) {
                 path += additionalQueryParams;
             }

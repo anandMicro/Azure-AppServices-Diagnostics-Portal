@@ -22,10 +22,10 @@ export class DetectorContainerComponent implements OnInit {
   detectorResponse: DetectorResponse = null;
   error: any;
 
-  startTimeToUse: Moment;
-  endTimeToUse: Moment;
   startTimeChildDetector: Moment = null;
   endTimeChildDetector: Moment = null;
+
+  effectiveLocale: string="";
 
   @Input() hideDetectorControl: boolean = false;
   @Input() isKeystoneSolution: boolean = false;
@@ -194,6 +194,7 @@ export class DetectorContainerComponent implements OnInit {
       }
     });
 
+    this.effectiveLocale = allRouteQueryParams['l'];
     if (this.analysisMode) {
       var startTimeChildDetector: string = allRouteQueryParams['startTimeChildDetector'];
       var endTimeChildDetector: string = allRouteQueryParams['endTimeChildDetector'];
