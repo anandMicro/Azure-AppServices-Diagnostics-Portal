@@ -35,11 +35,11 @@ export class FabricSearchResultsComponent {
     const resultCount = this.features.length;
     let searchResultAriaLabel = "";
     if (resultCount >= 1) {
-      searchResultAriaLabel = resultCount > 1 ? `${resultCount} Results` : `${resultCount} Result`;
+      searchResultAriaLabel = resultCount > 1 ? `Found ${resultCount} Results` : `Found ${resultCount} Result`;
     } else {
       searchResultAriaLabel = `No results were found.`;
     }
-    return `Found ${searchResultAriaLabel}, Press Escape to clear search bar`;
+    return `${searchResultAriaLabel}, Press Escape to clear search bar`;
   }
 
   @HostListener('mousedown', ['$event.target'])
