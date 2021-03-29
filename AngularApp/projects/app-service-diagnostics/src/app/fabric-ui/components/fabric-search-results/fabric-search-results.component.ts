@@ -20,7 +20,7 @@ enum BlurType {
   styleUrls: ['./fabric-search-results.component.scss']
 })
 export class FabricSearchResultsComponent {
-  searchPlaceHolder: string = "Search for common problems or tools.";
+  searchPlaceHolder: string = "Search for common problems or tools";
   searchValue: string = "";
   resultCount: number;
   features: Feature[] = [];
@@ -34,14 +34,12 @@ export class FabricSearchResultsComponent {
   get inputAriaLabel(): string {
     const resultCount = this.features.length;
     let searchResultAriaLabel = "";
-    if (this.searchValue === "") {
-      searchResultAriaLabel = "";
-    } else if (resultCount >= 1) {
+    if (resultCount >= 1) {
       searchResultAriaLabel = resultCount > 1 ? `${resultCount} Results` : `${resultCount} Result`;
     } else {
       searchResultAriaLabel = `No results were found.`;
     }
-    return `${searchResultAriaLabel} Press Escape to clear search result`;
+    return `Found ${searchResultAriaLabel}, Press Escape to clear search bar`;
   }
 
   @HostListener('mousedown', ['$event.target'])
