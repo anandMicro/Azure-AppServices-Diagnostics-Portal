@@ -556,6 +556,16 @@
              "azureCommImpactedServicesList": "",
              "searchSuffix": "AZURE METRICS ALERTS",
              "displayName": "Azure Metric Alerts"
-         }
+         },
+         { 
+            "service": "ResourceService",  
+            "resourceType": "Microsoft.Compute/virtualMachineScaleSets",  
+            "templateFileName": "VirtualMachineScaleSets",  
+            "imgSrc": "assets/img/VM-Scale-Sets.svg",  
+            "versionPrefix": "",  
+            "azureCommImpactedServicesList": "",
+            "searchSuffix": "VIRTUAL MACHINE SCALE SETS",
+            "displayName": "Virtual Machine Scale Sets"
+        }
     ]
 }
